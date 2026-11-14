@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-9">
+        <div class="card card-modern shadow-sm">
+            <div class="card-header card-header-gold py-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-circle shadow-sm">
+                        <i class="bi bi-person-vcard-fill fs-4" style="color: var(--gold-dark);"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0 fw-bold" style="color: var(--gold-dark);">Resident Account Registration</h4>
+                        <small class="text-muted"><i class="bi bi-pencil-square me-1"></i>Fill out your details to submit your registration form</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <form id="regForm" action="{{ url_for('register') }}" method="POST" enctype="multipart/form-data">
+                    
+                    <!-- SLIDE 1: PERSONAL INFORMATION -->
+                    <div id="slide1">
+                        <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                            <h5 class="text-dark fw-bold mb-0 d-flex align-items-center">
+                                <span class="badge rounded-pill me-2 px-3 py-2 text-white" style="background: var(--gold-dark);">
+                                    <i class="bi bi-1-circle-fill me-1"></i>Step 1
+                                </span>
+                                Demographic Form
+                            </h5>
+                            <span class="badge bg-light text-muted border"><i class="bi bi-info-circle me-1"></i>Personal & Contact Details</span>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-person text-warning me-1"></i>First Name *
+                                </label>
+                                <input type="text" name="first_name" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-person text-warning me-1"></i>Middle Name (or N/A)
+                                </label>
+                                <input type="text" name="middle_name" class="form-control" value="N/A" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-person text-warning me-1"></i>Last Name *
+                                </label>
+                                <input type="text" name="last_name" class="form-control" required>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-tag text-warning me-1"></i>Suffix (Optional)
+                                </label>
+                                <input type="text" name="suffix" class="form-control" placeholder="e.g. Jr, III">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-calendar-event text-warning me-1"></i>Date of Birth *
+                                </label>
+                                <input type="text" name="dob" class="form-control" placeholder="MM/DD/YYYY" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-gender-ambiguous text-warning me-1"></i>Gender *
+                                </label>
+                                <select name="gender" class="form-select" required>
+                                    <option value="">Select...</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-book-half text-warning me-1"></i>Religion *
+                                </label>
+                                <input type="text" name="religion" class="form-control" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>Purok Address *
+                                </label>
+                                <input type="text" name="purok_address" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-telephone-fill text-success me-1"></i>Phone Number *
+                                </label>
+                                <input type="text" name="phone_number" class="form-control" placeholder="e.g. 09123456789" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-envelope-at-fill text-primary me-1"></i>Email Address *
+                                </label>
+                                <input type="email" name="email_address" class="form-control" placeholder="example@email.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-building text-warning me-1"></i>City / Municipality *
+                                </label>
+                                <input type="text" name="city_municipality" class="form-control" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-map text-warning me-1"></i>State / Province *
+                                </label>
+                                <input type="text" name="state_province" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-mailbox2 text-warning me-1"></i>Postal Code *
+                                </label>
+                                <input type="text" name="postal_code" class="form-control" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-camera-fill text-warning me-1"></i>Profile Picture *
+                                </label>
+                                <input type="file" name="profile_picture" class="form-control" accept="image/*" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    <i class="bi bi-card-heading text-warning me-1"></i>Valid ID Document *
+                                </label>
+                                <input type="file" name="valid_id" class="form-control" accept="image/*" required>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="button" class="btn btn-gold px-4 rounded-pill shadow-sm d-inline-flex align-items-center gap-2" onclick="nextSlide()">
+                                <span>Next: Create Credentials</span>
+                                <i class="bi bi-arrow-right-circle fs-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SLIDE 2: CREDENTIALS SETUP -->
+                    <div id="slide2" style="display:none;">
+                        <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                            <h5 class="text-dark fw-bold mb-0 d-flex align-items-center">
+                                <span class="badge rounded-pill me-2 px-3 py-2 text-white" style="background: var(--gold-dark);">
+                                    <i class="bi bi-2-circle-fill me-1"></i>Step 2
+                                </span>
+                                Account Security
+                            </h5>
+                            <span class="badge bg-light text-muted border"><i class="bi bi-shield-check me-1"></i>Credentials Setup</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-secondary">
+                                <i class="bi bi-person-badge text-warning me-1"></i>Create Username (Minimum 8 characters) *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-at"></i></span>
+                                <input type="text" id="username" name="username" class="form-control" minlength="8" placeholder="Enter username" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-secondary">
+                                <i class="bi bi-key-fill text-warning me-1"></i>Create Password (Minimum 8 characters, letters and numbers only) *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" id="password" name="password" class="form-control" minlength="8" pattern="[a-zA-Z0-9]+" title="Password must contain letters and numbers only" placeholder="Enter password" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleRegPassword()" title="Show/Hide Password">
+                                    <i class="bi bi-eye" id="toggleRegPassIcon"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted"><i class="bi bi-info-circle me-1"></i>Must be alphanumeric (letters and numbers only) and at least 8 characters long.</small>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary rounded-pill px-4 d-inline-flex align-items-center gap-2" onclick="prevSlide()">
+                                <i class="bi bi-arrow-left-circle fs-5"></i>
+                                <span>Back to Step 1</span>
+                            </button>
+                            <button type="submit" class="btn btn-gold px-4 rounded-pill shadow-sm d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-check2-circle fs-5"></i>
+                                <span>Submit Registration</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="card-footer bg-white text-center py-3 border-top-0">
+                <span class="text-muted">Already registered?</span> 
+                <a href="{{ url_for('login') }}" class="fw-bold text-decoration-none ms-1" style="color: var(--gold-dark);">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Login Here
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function nextSlide() {
+        const inputs = document.querySelectorAll('#slide1 input[required], #slide1 select[required]');
+        let valid = true;
+        inputs.forEach(i => {
+            if (!i.value) { i.classList.add('is-invalid'); valid = false; }
+            else { i.classList.remove('is-invalid'); }
+        });
+        if (valid) {
+            document.getElementById('slide1').style.display = 'none';
+            document.getElementById('slide2').style.display = 'block';
+        } else {
+            alert('Please complete all required fields in Step 1.');
+        }
+    }
+    function prevSlide() {
+        document.getElementById('slide2').style.display = 'none';
+        document.getElementById('slide1').style.display = 'block';
+    }
+    function toggleRegPassword() {
+        const pass = document.getElementById('password');
+        const icon = document.getElementById('toggleRegPassIcon');
+        if (pass.type === 'password') {
+            pass.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            pass.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-3">
+    <div class="col-md-5 col-lg-4">
+        <div class="card card-modern shadow-sm">
+            <div class="card-header card-header-gold py-4 text-center">
+                <div class="icon-circle mx-auto mb-2 shadow-sm">
+                    <i class="bi bi-shield-lock-fill fs-4" style="color: var(--gold-dark);"></i>
+                </div>
+                <h4 class="mb-1 fw-bold" style="color: var(--gold-dark);">Resident Portal</h4>
+                <small class="text-muted"><i class="bi bi-box-arrow-in-right me-1"></i>Sign in to your account</small>
+            </div>
+            <div class="card-body p-4">
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-secondary">
+                            <i class="bi bi-person me-1" style="color: var(--gold-dark);"></i>Username
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            <input type="text" name="username" class="form-control" minlength="8" placeholder="Minimum 8 characters" required autofocus>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold small text-secondary">
+                            <i class="bi bi-key me-1" style="color: var(--gold-dark);"></i>Password
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            <input type="password" id="loginPassword" name="password" class="form-control" minlength="8" placeholder="Minimum 8 characters" required>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassBtn" onclick="toggleLoginPassword()" title="Show/Hide Password">
+                                <i class="bi bi-eye" id="togglePassIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-gold w-100 py-2 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-box-arrow-in-right fs-5"></i>
+                        <span>Sign In</span>
+                    </button>
+                </form>
+            </div>
+            <div class="card-footer bg-white text-center py-3 border-top-0">
+                <span class="text-muted">Need an account?</span> 
+                <a href="{{ url_for('register') }}" class="fw-bold text-decoration-none ms-1" style="color: var(--gold-dark);">
+                    <i class="bi bi-person-plus-fill me-1"></i>Register Here
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleLoginPassword() {
+        const passInput = document.getElementById('loginPassword');
+        const passIcon = document.getElementById('togglePassIcon');
+        if (passInput.type === 'password') {
+            passInput.type = 'text';
+            passIcon.classList.remove('bi-eye');
+            passIcon.classList.add('bi-eye-slash');
+        } else {
+            passInput.type = 'password';
+            passIcon.classList.remove('bi-eye-slash');
+            passIcon.classList.add('bi-eye');
+        }
+    }
+</script>
+{% endblock %}

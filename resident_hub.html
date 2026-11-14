@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if user.status != 'Approved' %}
+    <div class="card card-modern p-5 text-center shadow-sm">
+        <div class="icon-circle mx-auto mb-3 shadow-sm" style="width: 70px; height: 70px;">
+            <i class="bi bi-hourglass-split fs-1" style="color: var(--gold-dark);"></i>
+        </div>
+        <h3 class="fw-bold mb-2" style="color: var(--gold-dark);">
+            Account Application Status: 
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fs-6 align-middle">
+                <i class="bi bi-clock-history me-1"></i>{{ user.status }}
+            </span>
+        </h3>
+        <p class="mb-0 text-muted fs-6">
+            <i class="bi bi-shield-exclamation text-warning me-1"></i>
+            Your registration form is under verification. Please wait for an Admin to review your profile and valid ID.
+        </p>
+    </div>
+{% else %}
+    <div class="row g-4">
+        <!-- LEFT COLUMN: State Request & Barangay Services -->
+        <div class="col-lg-6">
+            
+            <!-- STATE REQUEST FORM -->
+            <div class="card card-modern mb-4 shadow-sm">
+                <div class="card-header card-header-gold py-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-file-earmark-medical-fill fs-5" style="color: var(--gold-dark);"></i>
+                    <div>
+                        <h5 class="mb-0 fw-bold" style="color: var(--gold-dark);">STATE REQUEST NOTICE</h5>
+                        <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Apply for situation validation by selecting your state and uploading evidence</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('submit_state_request') }}" method="POST" enctype="multipart/form-data">
+                        <label class="form-label fw-bold d-flex align-items-center gap-1">
+                            <i class="bi bi-check2-square text-warning"></i>
+                            <span>Select Applicable Category Checkboxes:</span>
+                        </label>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                    <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_medical" id="c1">
+                                    <label class="form-check-label small fw-semibold" for="c1">
+                                        <i class="bi bi-heart-pulse-fill text-danger me-1"></i>Medical Problem
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                    <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_pwd" id="c2">
+                                    <label class="form-check-label small fw-semibold" for="c2">
+                                        <i class="bi bi-person-wheelchair text-primary me-1"></i>PWD
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                    <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_senior" id="c3">
+                                    <label class="form-check-label small fw-semibold" for="c3">
+                                        <i class="bi bi-person-standing text-warning me-1"></i>Senior Citizen
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                    <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_disaster" id="c4">
+                                    <label class="form-check-label small fw-semibold" for="c4">
+                                        <i class="bi bi-cloud-lightning-rain-fill text-info me-1"></i>Disaster Victim
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="form-label fw-bold d-flex align-items-center gap-1">
+                            <i class="bi bi-images text-warning"></i>
+                            <span>Upload Evidence Pictures (1 to 3 images):</span>
+                        </label>
+                        <div class="mb-2">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><i class="bi bi-image-fill"></i></span>
+                                <input type="file" name="evidence_1" class="form-control" accept="image/*" required>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                <input type="file" name="evidence_2" class="form-control" accept="image/*">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                <input type="file" name="evidence_3" class="form-control" accept="image/*">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-gold w-100 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-send-fill"></i>
+                            <span>Submit State Request</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- BARANGAY SERVICES showcase -->
+            <div class="card card-modern shadow-sm">
+                <div class="card-header card-header-gold py-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-bank2 fs-5" style="color: var(--gold-dark);"></i>
+                    <h5 class="mb-0 fw-bold" style="color: var(--gold-dark);">BARANGAY SERVICES</h5>
+                </div>
+                <div class="card-body">
+                    <p class="fw-bold mb-2 small text-secondary">
+                        <i class="bi bi-briefcase-fill text-warning me-1"></i>Available Services at the Barangay Hall:
+                    </p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item bg-transparent d-flex align-items-center px-0 py-2">
+                            <i class="bi bi-patch-check-fill text-warning me-2 fs-5"></i>
+                            <span class="fw-semibold">Barangay Clearance</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex align-items-center px-0 py-2">
+                            <i class="bi bi-house-door-fill text-warning me-2 fs-5"></i>
+                            <span class="fw-semibold">Certificate of Residency</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex align-items-center px-0 py-2">
+                            <i class="bi bi-file-earmark-person-fill text-warning me-2 fs-5"></i>
+                            <span class="fw-semibold">Certificate of Indigency</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex align-items-center px-0 py-2">
+                            <i class="bi bi-shop-window text-warning me-2 fs-5"></i>
+                            <span class="fw-semibold">Barangay Business Permit / Clearance</span>
+                        </li>
+                        <li class="list-group-item bg-transparent d-flex align-items-center px-0 py-2">
+                            <i class="bi bi-briefcase-fill text-warning me-2 fs-5"></i>
+                            <span class="fw-semibold">First-Time Jobseeker Certificate</span>
+                        </li>
+                    </ul>
+                    <div class="p-3 bg-light rounded border-start border-3 border-warning">
+                        <p class="small text-muted mb-0">
+                            <i class="bi bi-info-circle-fill text-warning me-1"></i>
+                            These services are available at our Barangay Hall. If you wish to avail of any of these services, please proceed to the Barangay Service Desk and approach our staff for requirements and assistance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Announcements & Beneficiary Lists -->
+        <div class="col-lg-6">
+            
+            <!-- BENEFICIARY ANNOUNCEMENT DISPLAY -->
+            <div class="card card-modern mb-4 shadow-sm">
+                <div class="card-header card-header-gold py-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-people-fill fs-5" style="color: var(--gold-dark);"></i>
+                    <div>
+                        <h5 class="mb-0 fw-bold" style="color: var(--gold-dark);">ACCEPTED BENEFICIARIES LIST</h5>
+                        <small class="text-muted"><i class="bi bi-shield-check me-1"></i>Approved residents list for government/barangay aid programs</small>
+                    </div>
+                </div>
+                <div class="card-body p-3" style="max-height: 360px; overflow-y: auto;">
+                    {% for ba in beneficiary_announcements %}
+                        <div class="p-3 mb-3 border rounded bg-light shadow-sm">
+                            <h6 class="fw-bold text-dark mb-1 d-flex align-items-center gap-1">
+                                <i class="bi bi-award-fill text-warning"></i>
+                                <span>{{ ba.title }}</span>
+                            </h6>
+                            <p class="small text-muted mb-2">{{ ba.description }}</p>
+                            <label class="small fw-bold d-flex align-items-center gap-1" style="color: var(--gold-dark);">
+                                <i class="bi bi-person-check-fill"></i>
+                                <span>Accepted Beneficiaries:</span>
+                            </label>
+                            <ul class="small mb-0 list-unstyled ps-1 mt-1">
+                                {% for name in ba.names %}
+                                    <li class="d-flex align-items-center py-1 border-bottom border-light">
+                                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                        <span>{{ name }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-people fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                            <span>No active beneficiary notices.</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- GENERAL ANNOUNCEMENTS -->
+            <div class="card card-modern shadow-sm">
+                <div class="card-header card-header-gold py-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-megaphone-fill fs-5" style="color: var(--gold-dark);"></i>
+                    <h5 class="mb-0 fw-bold" style="color: var(--gold-dark);">GENERAL ANNOUNCEMENTS</h5>
+                </div>
+                <div class="card-body p-3" style="max-height: 360px; overflow-y: auto;">
+                    {% for ann in announcements %}
+                        <div class="p-3 mb-3 border-start border-4 border-warning bg-light rounded shadow-sm">
+                            <span class="badge badge-gold float-end d-flex align-items-center gap-1">
+                                <i class="bi bi-tag-fill"></i>{{ ann.category }}
+                            </span>
+                            <h6 class="fw-bold text-dark d-flex align-items-center gap-1">
+                                <i class="bi bi-bell-fill text-warning"></i>
+                                <span>{{ ann.title }}</span>
+                            </h6>
+                            <p class="small text-secondary mb-1">{{ ann.content }}</p>
+                            <small class="text-muted d-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                <i class="bi bi-calendar3"></i>
+                                <span>Posted: {{ ann.created_at.strftime('%b %d, %Y') }}</span>
+                            </small>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-newspaper fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                            <span>No general announcements.</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

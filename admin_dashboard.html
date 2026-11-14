@@ -1,0 +1,997 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card card-modern p-3 mb-4 d-flex flex-row justify-content-between align-items-center shadow-sm">
+    <h3 class="fw-bold mb-0 d-flex align-items-center gap-2" style="color: var(--gold-dark);">
+        <i class="bi bi-shield-lock-fill"></i>
+        <span>ADMINISTRATOR CONTROL HUB</span>
+    </h3>
+    <button class="btn btn-outline-warning text-dark fw-bold rounded-pill shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#adminPassModal">
+        <i class="bi bi-key-fill text-warning"></i>
+        <span>Change Admin Password</span>
+    </button>
+</div>
+
+<ul class="nav nav-pills mb-4 gap-2" id="adminTabs">
+    <li class="nav-item">
+        <a class="nav-link active d-flex align-items-center gap-2" data-bs-toggle="tab" href="#pendingTab">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Account Approval Requests</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#stateReqTab">
+            <i class="bi bi-clipboard2-pulse-fill"></i>
+            <span>State Request Verification</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#docTrackingTab">
+            <i class="bi bi-folder2-open"></i>
+            <span>Document Tracking & Directory</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#beneficiaryTab">
+            <i class="bi bi-people-fill"></i>
+            <span>Beneficiary Announcements</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab" href="#announcementTab">
+            <i class="bi bi-megaphone-fill"></i>
+            <span>General Announcements</span>
+        </a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    
+    <!-- 1. ACCOUNT APPROVAL FORM REVIEW -->
+    <div class="tab-pane fade show active" id="pendingTab">
+        <div class="row g-3">
+            {% for u in pending_users %}
+                <div class="col-md-6">
+                    <div class="card border-warning shadow-sm">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                                <i class="bi bi-person-badge text-warning"></i>
+                                <span>{{ u.first_name }} {{ u.middle_name }} {{ u.last_name }} {{ u.suffix }}</span>
+                            </h5>
+                            <p class="small text-muted mb-3">
+                                <i class="bi bi-person me-1"></i>Username: <strong>{{ u.username }}</strong> 
+                                <span class="mx-1">|</span>
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>Purok: <strong>{{ u.purok_address }}</strong>
+                            </p>
+                            
+                            <button class="btn btn-gold btn-sm w-100 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#inspectModal{{ u.id }}">
+                                <i class="bi bi-eye-fill"></i>
+                                <span>Inspect Full Form & Valid ID</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full Information Review Modal -->
+                <div class="modal fade" id="inspectModal{{ u.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header navbar-modern text-white">
+                                <h5 class="modal-title d-flex align-items-center gap-2">
+                                    <i class="bi bi-person-vcard"></i>
+                                    <span>Review Submitted Form: {{ u.first_name }} {{ u.last_name }}</span>
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold border-bottom pb-1 d-flex align-items-center gap-1" style="color: var(--gold-dark);">
+                                            <i class="bi bi-person-lines-fill"></i>
+                                            <span>Personal Information</span>
+                                        </h6>
+                                        <p class="mb-1"><strong>First Name:</strong> {{ u.first_name }}</p>
+                                        <p class="mb-1"><strong>Middle Name:</strong> {{ u.middle_name }}</p>
+                                        <p class="mb-1"><strong>Last Name:</strong> {{ u.last_name }}</p>
+                                        <p class="mb-1"><strong>Suffix:</strong> {{ u.suffix or 'None' }}</p>
+                                        <p class="mb-1"><strong>Date of Birth:</strong> {{ u.dob }}</p>
+                                        <p class="mb-1"><strong>Gender:</strong> {{ u.gender }}</p>
+                                        <p class="mb-1"><strong>Religion:</strong> {{ u.religion }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="fw-bold border-bottom pb-1 d-flex align-items-center gap-1" style="color: var(--gold-dark);">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                            <span>Contact & Address</span>
+                                        </h6>
+                                        <p class="mb-1"><strong>Purok Address:</strong> {{ u.purok_address }}</p>
+                                        <p class="mb-1"><strong>Phone Number:</strong> {{ u.phone_number }}</p>
+                                        <p class="mb-1"><strong>Email Address:</strong> {{ u.email_address }}</p>
+                                        <p class="mb-1"><strong>City / Municipality:</strong> {{ u.city_municipality }}</p>
+                                        <p class="mb-1"><strong>State / Province:</strong> {{ u.state_province }}</p>
+                                        <p class="mb-1"><strong>Postal Code:</strong> {{ u.postal_code }}</p>
+                                    </div>
+                                    <hr>
+                                    <div class="col-md-6 text-center">
+                                        <h6 class="fw-bold d-flex align-items-center justify-content-center gap-1" style="color: var(--gold-dark);">
+                                            <i class="bi bi-camera-fill"></i>
+                                            <span>Profile Picture</span>
+                                        </h6>
+                                        {% if u.profile_picture %}
+                                            <div class="zoomable-img-wrapper" onclick="openImageViewer('{{ url_for('static', filename='uploads/' + u.profile_picture) }}', 'Profile Picture: {{ u.first_name }} {{ u.last_name }}')" title="Click to zoom in and inspect">
+                                                <img src="{{ url_for('static', filename='uploads/' + u.profile_picture) }}" class="img-thumbnail shadow-sm" style="max-height:180px;">
+                                                <div class="zoom-overlay">
+                                                    <i class="bi bi-zoom-in fs-4"></i>
+                                                    <span class="small fw-semibold mt-1">Click to Zoom</span>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted small py-3"><i class="bi bi-image text-secondary me-1"></i>No profile picture</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <h6 class="fw-bold d-flex align-items-center justify-content-center gap-1" style="color: var(--gold-dark);">
+                                            <i class="bi bi-card-heading"></i>
+                                            <span>Valid ID Document</span>
+                                        </h6>
+                                        {% if u.valid_id %}
+                                            <div class="zoomable-img-wrapper" onclick="openImageViewer('{{ url_for('static', filename='uploads/' + u.valid_id) }}', 'Valid ID: {{ u.first_name }} {{ u.last_name }}')" title="Click to zoom in and inspect">
+                                                <img src="{{ url_for('static', filename='uploads/' + u.valid_id) }}" class="img-thumbnail shadow-sm" style="max-height:180px;">
+                                                <div class="zoom-overlay">
+                                                    <i class="bi bi-zoom-in fs-4"></i>
+                                                    <span class="small fw-semibold mt-1">Click to Zoom</span>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted small py-3"><i class="bi bi-card-image text-secondary me-1"></i>No ID document</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{{ url_for('verify_user', user_id=u.id, action='reject') }}" class="btn btn-danger rounded-pill d-inline-flex align-items-center gap-1">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    <span>Reject Application</span>
+                                </a>
+                                <a href="{{ url_for('verify_user', user_id=u.id, action='approve') }}" class="btn btn-success rounded-pill d-inline-flex align-items-center gap-1">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span>Approve Application</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-person-check fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                    <span>No pending account creation submissions to review.</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 2. STATE REQUEST VERIFICATION DESK -->
+    <div class="tab-pane fade" id="stateReqTab">
+        <h5 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color: var(--gold-dark);">
+            <i class="bi bi-clipboard2-pulse-fill"></i>
+            <span>Pending Resident State Requests</span>
+        </h5>
+        <div class="row g-3">
+            {% for req in state_requests %}
+                <div class="col-md-6">
+                    <div class="card card-modern p-3 shadow-sm">
+                        <h6 class="fw-bold d-flex align-items-center gap-2">
+                            <i class="bi bi-person-circle text-warning"></i>
+                            <span>{{ req.user.first_name }} {{ req.user.last_name }}</span>
+                        </h6>
+                        <p class="small text-muted mb-2">Requested Categories: 
+                            {% if req.cat_medical %}<span class="badge bg-danger"><i class="bi bi-heart-pulse-fill me-1"></i>Medical</span>{% endif %}
+                            {% if req.cat_pwd %}<span class="badge bg-primary"><i class="bi bi-person-wheelchair me-1"></i>PWD</span>{% endif %}
+                            {% if req.cat_senior %}<span class="badge bg-warning text-dark"><i class="bi bi-person-standing me-1"></i>Senior</span>{% endif %}
+                            {% if req.cat_disaster %}<span class="badge bg-info text-dark"><i class="bi bi-cloud-lightning-rain-fill me-1"></i>Disaster</span>{% endif %}
+                        </p>
+                        <button class="btn btn-gold btn-sm rounded-pill mb-2 shadow-sm d-inline-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#inspectStateModal{{ req.id }}">
+                            <i class="bi bi-card-checklist"></i>
+                            <span>Inspect Evidence & Process</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- State Request Evidence Inspection Modal -->
+                <div class="modal fade" id="inspectStateModal{{ req.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="{{ url_for('process_state_request', req_id=req.id, action='approve') }}" method="POST">
+                                <div class="modal-header navbar-modern text-white">
+                                    <h5 class="modal-title d-flex align-items-center gap-2">
+                                        <i class="bi bi-file-earmark-medical"></i>
+                                        <span>Inspect State Evidence: {{ req.user.first_name }} {{ req.user.last_name }}</span>
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h6 class="fw-bold d-flex align-items-center gap-1" style="color: var(--gold-dark);">
+                                        <i class="bi bi-images"></i>
+                                        <span>Submitted Evidence Pictures:</span>
+                                    </h6>
+                                    <div class="d-flex gap-3 flex-wrap mb-3">
+                                        {% if req.evidence_1 %}
+                                            <div class="zoomable-img-wrapper" onclick="openImageViewer('{{ url_for('static', filename='uploads/' + req.evidence_1) }}', 'State Evidence 1: {{ req.user.first_name }} {{ req.user.last_name }}')" title="Click to zoom in and inspect">
+                                                <img src="{{ url_for('static', filename='uploads/' + req.evidence_1) }}" class="img-thumbnail shadow-sm" style="max-height:160px;">
+                                                <div class="zoom-overlay">
+                                                    <i class="bi bi-zoom-in fs-4"></i>
+                                                    <span class="small fw-semibold mt-1">Click to Zoom</span>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted small py-2"><i class="bi bi-image text-secondary me-1"></i>No evidence uploaded</p>
+                                        {% endif %}
+                                        {% if req.evidence_2 %}
+                                            <div class="zoomable-img-wrapper" onclick="openImageViewer('{{ url_for('static', filename='uploads/' + req.evidence_2) }}', 'State Evidence 2: {{ req.user.first_name }} {{ req.user.last_name }}')" title="Click to zoom in and inspect">
+                                                <img src="{{ url_for('static', filename='uploads/' + req.evidence_2) }}" class="img-thumbnail shadow-sm" style="max-height:160px;">
+                                                <div class="zoom-overlay">
+                                                    <i class="bi bi-zoom-in fs-4"></i>
+                                                    <span class="small fw-semibold mt-1">Click to Zoom</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if req.evidence_3 %}
+                                            <div class="zoomable-img-wrapper" onclick="openImageViewer('{{ url_for('static', filename='uploads/' + req.evidence_3) }}', 'State Evidence 3: {{ req.user.first_name }} {{ req.user.last_name }}')" title="Click to zoom in and inspect">
+                                                <img src="{{ url_for('static', filename='uploads/' + req.evidence_3) }}" class="img-thumbnail shadow-sm" style="max-height:160px;">
+                                                <div class="zoom-overlay">
+                                                    <i class="bi bi-zoom-in fs-4"></i>
+                                                    <span class="small fw-semibold mt-1">Click to Zoom</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <hr>
+                                    <h6 class="fw-bold d-flex align-items-center gap-1" style="color: var(--gold-dark);">
+                                        <i class="bi bi-tags-fill"></i>
+                                        <span>Assign/Confirm Validated Resident Category Tags:</span>
+                                    </h6>
+                                    <div class="row g-2 mt-1">
+                                        <div class="col-md-6">
+                                            <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_medical" id="sm1" {% if req.cat_medical %}checked{% endif %}>
+                                                <label class="form-check-label small fw-semibold" for="sm1">
+                                                    <i class="bi bi-heart-pulse-fill text-danger me-1"></i>Medical Problem
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_pwd" id="sm2" {% if req.cat_pwd %}checked{% endif %}>
+                                                <label class="form-check-label small fw-semibold" for="sm2">
+                                                    <i class="bi bi-person-wheelchair text-primary me-1"></i>PWD
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_senior" id="sm3" {% if req.cat_senior %}checked{% endif %}>
+                                                <label class="form-check-label small fw-semibold" for="sm3">
+                                                    <i class="bi bi-person-standing text-warning me-1"></i>Senior Citizen
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_disaster" id="sm4" {% if req.cat_disaster %}checked{% endif %}>
+                                                <label class="form-check-label small fw-semibold" for="sm4">
+                                                    <i class="bi bi-cloud-lightning-rain-fill text-info me-1"></i>Disaster Victim
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-between">
+                                    <button type="submit" formaction="{{ url_for('process_state_request', req_id=req.id, action='reject') }}" class="btn btn-danger rounded-pill d-inline-flex align-items-center gap-1">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                        <span>Disapprove Request</span>
+                                    </button>
+                                    <button type="submit" class="btn btn-success rounded-pill d-inline-flex align-items-center gap-1">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        <span>Approve Request & Assign Categories</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-check2-all fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                    <span>No state validation requests awaiting review.</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 3. DOCUMENT TRACKING & SEARCHABLE RESIDENT DIRECTORY -->
+    <div class="tab-pane fade" id="docTrackingTab">
+        <div class="card card-modern p-3 mb-3 shadow-sm">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-warning">
+                    <i class="bi bi-search fs-5"></i>
+                </span>
+                <input type="text" id="directorySearch" class="form-control form-control-lg border-start-0 ps-0" placeholder="Search document records by name, username, email, or purok...">
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered bg-white shadow-sm align-middle" id="residentTable">
+                <thead class="bg-gold text-white" style="background: linear-gradient(135deg, #B8860B 0%, #D4AF37 100%);">
+                    <tr>
+                        <th><i class="bi bi-person-fill me-1"></i>Resident Name</th>
+                        <th><i class="bi bi-at me-1"></i>Username</th>
+                        <th><i class="bi bi-geo-alt-fill me-1"></i>Purok Address</th>
+                        <th><i class="bi bi-tags-fill me-1"></i>Category Tags</th>
+                        <th><i class="bi bi-sliders me-1"></i>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in residents %}
+                    <tr>
+                        <td class="fw-bold">{{ r.first_name }} {{ r.last_name }}</td>
+                        <td>{{ r.username }}</td>
+                        <td>{{ r.purok_address }}</td>
+                        <td>
+                            {% if r.cat_medical %}<span class="badge bg-danger me-1"><i class="bi bi-heart-pulse-fill me-1"></i>Medical</span>{% endif %}
+                            {% if r.cat_pwd %}<span class="badge bg-primary me-1"><i class="bi bi-person-wheelchair me-1"></i>PWD</span>{% endif %}
+                            {% if r.cat_senior %}<span class="badge bg-warning text-dark me-1"><i class="bi bi-person-standing me-1"></i>Senior</span>{% endif %}
+                            {% if r.cat_disaster %}<span class="badge bg-info text-dark me-1"><i class="bi bi-cloud-lightning-rain-fill me-1"></i>Disaster</span>{% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-1">
+                                <button class="btn btn-sm btn-gold rounded-pill shadow-sm d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#viewProfile{{ r.id }}">
+                                    <i class="bi bi-eye-fill"></i>
+                                    <span>View Record</span>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#editCat{{ r.id }}">
+                                    <i class="bi bi-pencil-square"></i>
+                                    <span>Edit Categories</span>
+                                </button>
+                                <button class="btn btn-sm btn-warning rounded-pill d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#resetPass{{ r.id }}">
+                                    <i class="bi bi-key-fill"></i>
+                                    <span>Change Password</span>
+                                </button>
+                                <form action="{{ url_for('delete_resident', user_id=r.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Permanently delete this resident record?');">
+                                    <button type="submit" class="btn btn-sm btn-danger rounded-pill d-inline-flex align-items-center gap-1">
+                                        <i class="bi bi-trash3-fill"></i>
+                                        <span>Delete</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Complete Document Tracking Record Modal -->
+                    <div class="modal fade" id="viewProfile{{ r.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header navbar-modern text-white">
+                                    <h5 class="modal-title d-flex align-items-center gap-2">
+                                        <i class="bi bi-file-earmark-person-fill"></i>
+                                        <span>Full Document Tracking Record: {{ r.first_name }} {{ r.last_name }}</span>
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <h6 class="fw-bold border-bottom pb-1 d-flex align-items-center gap-1" style="color: var(--gold-dark);">
+                                                <i class="bi bi-person-lines-fill"></i>
+                                                <span>Demographic Form Data</span>
+                                            </h6>
+                                            <p class="mb-1"><strong>First Name:</strong> {{ r.first_name }}</p>
+                                            <p class="mb-1"><strong>Middle Name:</strong> {{ r.middle_name }}</p>
+                                            <p class="mb-1"><strong>Last Name:</strong> {{ r.last_name }}</p>
+                                            <p class="mb-1"><strong>Suffix:</strong> {{ r.suffix or 'None' }}</p>
+                                            <p class="mb-1"><strong>Date of Birth:</strong> {{ r.dob }}</p>
+                                            <p class="mb-1"><strong>Gender:</strong> {{ r.gender }}</p>
+                                            <p class="mb-1"><strong>Religion:</strong> {{ r.religion }}</p>
+                                            <p class="mb-1"><strong>Username:</strong> {{ r.username }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 class="fw-bold border-bottom pb-1 d-flex align-items-center gap-1" style="color: var(--gold-dark);">
+                                                <i class="bi bi-geo-alt-fill"></i>
+                                                <span>Contact & Address Info</span>
+                                            </h6>
+                                            <p class="mb-1"><strong>Purok Address:</strong> {{ r.purok_address }}</p>
+                                            <p class="mb-1"><strong>Phone Number:</strong> {{ r.phone_number }}</p>
+                                            <p class="mb-1"><strong>Email Address:</strong> {{ r.email_address }}</p>
+                                            <p class="mb-1"><strong>City / Municipality:</strong> {{ r.city_municipality }}</p>
+                                            <p class="mb-1"><strong>State / Province:</strong> {{ r.state_province }}</p>
+                                            <p class="mb-1"><strong>Postal Code:</strong> {{ r.postal_code }}</p>
+                                            <p class="mb-1"><strong>Account Status:</strong> <span class="badge bg-success">{{ r.status }}</span></p>
+                                        </div>
+                                        <hr>
+                                        <div class="col-md-6 text-center">
+                                            <h6 class="fw-bold d-flex align-items-center justify-content-center gap-1" style="color: var(--gold-dark);">
+                                                <i class="bi bi-camera-fill"></i>
+                                                <span>Profile Picture</span>
+                                            </h6>
+                                            {% if r.profile_picture %}
+                                                <div class="zoomable-img-wrapper" onclick="openImageViewer('{{ url_for('static', filename='uploads/' + r.profile_picture) }}', 'Profile Picture: {{ r.first_name }} {{ r.last_name }}')" title="Click to zoom in and inspect">
+                                                    <img src="{{ url_for('static', filename='uploads/' + r.profile_picture) }}" class="img-thumbnail shadow-sm" style="max-height:180px;">
+                                                    <div class="zoom-overlay">
+                                                        <i class="bi bi-zoom-in fs-4"></i>
+                                                        <span class="small fw-semibold mt-1">Click to Zoom</span>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <p class="text-muted small py-3"><i class="bi bi-image text-secondary me-1"></i>No profile picture</p>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h6 class="fw-bold d-flex align-items-center justify-content-center gap-1" style="color: var(--gold-dark);">
+                                                <i class="bi bi-card-heading"></i>
+                                                <span>Valid ID Document</span>
+                                            </h6>
+                                            {% if r.valid_id %}
+                                                <div class="zoomable-img-wrapper" onclick="openImageViewer('{{ url_for('static', filename='uploads/' + r.valid_id) }}', 'Valid ID: {{ r.first_name }} {{ r.last_name }}')" title="Click to zoom in and inspect">
+                                                    <img src="{{ url_for('static', filename='uploads/' + r.valid_id) }}" class="img-thumbnail shadow-sm" style="max-height:180px;">
+                                                    <div class="zoom-overlay">
+                                                        <i class="bi bi-zoom-in fs-4"></i>
+                                                        <span class="small fw-semibold mt-1">Click to Zoom</span>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <p class="text-muted small py-3"><i class="bi bi-card-image text-secondary me-1"></i>No ID document</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Categories Modal -->
+                    <div class="modal fade" id="editCat{{ r.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ url_for('update_resident_categories', user_id=r.id) }}" method="POST">
+                                    <div class="modal-header navbar-modern text-white">
+                                        <h5 class="modal-title d-flex align-items-center gap-2">
+                                            <i class="bi bi-tags-fill"></i>
+                                            <span>Manage Categories: {{ r.first_name }}</span>
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="d-flex flex-column gap-2">
+                                            <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_medical" id="mc1{{ r.id }}" {% if r.cat_medical %}checked{% endif %}>
+                                                <label class="form-check-label small fw-semibold" for="mc1{{ r.id }}">
+                                                    <i class="bi bi-heart-pulse-fill text-danger me-1"></i>Medical Problem
+                                                </label>
+                                            </div>
+                                            <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_pwd" id="mc2{{ r.id }}" {% if r.cat_pwd %}checked{% endif %}>
+                                                <label class="form-check-label small fw-semibold" for="mc2{{ r.id }}">
+                                                    <i class="bi bi-person-wheelchair text-primary me-1"></i>PWD
+                                                </label>
+                                            </div>
+                                            <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_senior" id="mc3{{ r.id }}" {% if r.cat_senior %}checked{% endif %}>
+                                                <label class="form-check-label small fw-semibold" for="mc3{{ r.id }}">
+                                                    <i class="bi bi-person-standing text-warning me-1"></i>Senior Citizen
+                                                </label>
+                                            </div>
+                                            <div class="form-check p-2 border rounded bg-light d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-1" type="checkbox" name="cat_disaster" id="mc4{{ r.id }}" {% if r.cat_disaster %}checked{% endif %}>
+                                                <label class="form-check-label small fw-semibold" for="mc4{{ r.id }}">
+                                                    <i class="bi bi-cloud-lightning-rain-fill text-info me-1"></i>Disaster Victim
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-gold rounded-pill shadow-sm d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Save Category Updates</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reset Password Modal -->
+                    <div class="modal fade" id="resetPass{{ r.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ url_for('admin_change_password', user_id=r.id) }}" method="POST">
+                                    <div class="modal-header navbar-modern text-white">
+                                        <h5 class="modal-title d-flex align-items-center gap-2">
+                                            <i class="bi bi-key-fill"></i>
+                                            <span>Change Password for {{ r.first_name }}</span>
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label class="form-label small fw-semibold text-secondary">Set New Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                            <input type="text" name="new_password" class="form-control" placeholder="Enter new password" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-gold rounded-pill shadow-sm d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Update Password</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 4. BENEFICIARY ANNOUNCEMENTS DESK -->
+    <div class="tab-pane fade" id="beneficiaryTab">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="card card-modern shadow-sm">
+                    <div class="card-header card-header-gold py-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-plus-circle-fill text-warning fs-5"></i>
+                        <h5 class="mb-0 fw-bold" style="color: var(--gold-dark);">Publish Beneficiary Notice</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('post_beneficiary_announcement') }}" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">
+                                    <i class="bi bi-fonts me-1 text-warning"></i>Notice Title
+                                </label>
+                                <input type="text" name="title" class="form-control" placeholder="e.g. 4Ps Distribution Q1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">
+                                    <i class="bi bi-card-text me-1 text-warning"></i>Program Description
+                                </label>
+                                <textarea name="description" class="form-control" rows="3" placeholder="Provide details regarding the program..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary d-flex align-items-center justify-content-between">
+                                    <span><i class="bi bi-people-fill me-1 text-warning"></i>Select Approved Beneficiaries:</span>
+                                </label>
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" id="benSearchInput" class="form-control" placeholder="Search resident name...">
+                                </div>
+                                <div id="benResidentsList" style="max-height: 200px; overflow-y: auto;" class="border p-2 rounded bg-light">
+                                    {% for resident in approved_residents %}
+                                        <div class="form-check ben-item py-1">
+                                            <input class="form-check-input" type="checkbox" name="selected_residents" value="{{ resident.id }}" id="ben{{ resident.id }}">
+                                            <label class="form-check-label small" for="ben{{ resident.id }}">
+                                                <i class="bi bi-person me-1 text-secondary"></i>
+                                                {{ resident.first_name }} {{ resident.last_name }} 
+                                                <span class="text-muted">({{ resident.purok_address }})</span>
+                                            </label>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted small mb-0 text-center py-2">No approved residents available.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-gold w-100 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-send-fill"></i>
+                                <span>Publish Beneficiary List</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <h5 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color: var(--gold-dark);">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Published Beneficiary Announcements</span>
+                </h5>
+                {% for ba in beneficiary_announcements %}
+                    <div class="card mb-2 shadow-sm border-start border-4 border-warning">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 fw-bold d-flex align-items-center gap-1">
+                                    <i class="bi bi-award-fill text-warning"></i>
+                                    <span>{{ ba.title }}</span>
+                                </h6>
+                                <p class="small text-muted mb-0">{{ ba.description }}</p>
+                            </div>
+                            <form action="{{ url_for('delete_beneficiary_announcement', ba_id=ba.id) }}" method="POST">
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill d-inline-flex align-items-center gap-1" onclick="return confirm('Delete this beneficiary announcement?');">
+                                    <i class="bi bi-trash3-fill"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-people fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                        <span>No beneficiary announcements published.</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. GENERAL ANNOUNCEMENTS DESK -->
+    <div class="tab-pane fade" id="announcementTab">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="card card-modern shadow-sm">
+                    <div class="card-header card-header-gold py-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-pencil-square text-warning fs-5"></i>
+                        <h5 class="mb-0 fw-bold" style="color: var(--gold-dark);">Post General Announcement</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('post_announcement') }}" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">
+                                    <i class="bi bi-fonts me-1 text-warning"></i>Title
+                                </label>
+                                <input type="text" name="title" class="form-control" placeholder="Announcement Title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">
+                                    <i class="bi bi-tag-fill me-1 text-warning"></i>Category
+                                </label>
+                                <select name="category" class="form-select">
+                                    <option>General</option>
+                                    <option>Meeting</option>
+                                    <option>Emergency</option>
+                                    <option>Health</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">
+                                    <i class="bi bi-card-text me-1 text-warning"></i>Content
+                                </label>
+                                <textarea name="content" class="form-control" rows="4" placeholder="Announcement details..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-gold w-100 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-megaphone-fill"></i>
+                                <span>Publish Announcement</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <h5 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color: var(--gold-dark);">
+                    <i class="bi bi-megaphone-fill"></i>
+                    <span>Active General Announcements</span>
+                </h5>
+                {% for a in announcements %}
+                    <div class="card mb-2 shadow-sm border-start border-4 border-warning">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0 fw-bold d-flex align-items-center gap-1">
+                                    <i class="bi bi-bell-fill text-warning"></i>
+                                    <span>{{ a.title }}</span>
+                                    <span class="badge badge-gold ms-2 d-inline-flex align-items-center gap-1">
+                                        <i class="bi bi-tag-fill"></i>{{ a.category }}
+                                    </span>
+                                </h6>
+                                <p class="small text-muted mb-0 mt-1">{{ a.content }}</p>
+                            </div>
+                            <form action="{{ url_for('delete_announcement', ann_id=a.id) }}" method="POST">
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill d-inline-flex align-items-center gap-1" onclick="return confirm('Delete this announcement?');">
+                                    <i class="bi bi-trash3-fill"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-newspaper fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                        <span>No published general announcements.</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Admin Self Password Modal -->
+<div class="modal fade" id="adminPassModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ url_for('admin_change_password', user_id=admin_user.id) }}" method="POST">
+                <div class="modal-header navbar-modern text-white">
+                    <h5 class="modal-title d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <span>Change Admin Password</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label small fw-semibold text-secondary">Enter New Admin Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                        <input type="text" name="new_password" class="form-control" placeholder="Enter new password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-gold rounded-pill shadow-sm d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Update Password</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Interactive Image Inspection Lightbox Modal -->
+<div class="modal fade" id="imageViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 92vw;">
+        <div class="modal-content border-0 shadow-lg text-white" style="background: rgba(18, 20, 24, 0.96); backdrop-filter: blur(10px); border-radius: 16px;">
+            <!-- Header Toolbar -->
+            <div class="modal-header border-bottom border-secondary py-2 px-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-circle p-2 bg-warning text-dark">
+                        <i class="bi bi-search fs-6"></i>
+                    </span>
+                    <div>
+                        <h6 id="imageViewerTitle" class="mb-0 fw-bold text-white text-truncate" style="max-width: 320px;">Image Inspection</h6>
+                        <small class="text-white-50">Resident Document Inspection</small>
+                    </div>
+                    <span id="imageViewerZoomLevel" class="badge rounded-pill bg-dark border border-secondary text-warning px-3 py-2 ms-2 fs-6">100%</span>
+                </div>
+                
+                <!-- Action Controls Toolbar -->
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <div class="btn-group shadow-sm" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" onclick="zoomInImage()" title="Zoom In (+ or Mouse Wheel Up)">
+                            <i class="bi bi-zoom-in text-warning"></i>
+                            <span class="d-none d-md-inline">Zoom In</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" onclick="zoomOutImage()" title="Zoom Out (- or Mouse Wheel Down)">
+                            <i class="bi bi-zoom-out text-warning"></i>
+                            <span class="d-none d-md-inline">Zoom Out</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" onclick="resetImageZoom()" title="Reset Zoom (100% or R)">
+                            <i class="bi bi-arrow-counterclockwise text-warning"></i>
+                            <span class="d-none d-md-inline">Reset</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" onclick="rotateImage()" title="Rotate 90 degrees">
+                            <i class="bi bi-arrow-repeat text-warning"></i>
+                            <span class="d-none d-md-inline">Rotate</span>
+                        </button>
+                    </div>
+
+                    <a id="imageViewerDownloadBtn" href="#" target="_blank" class="btn btn-sm btn-outline-warning rounded-pill d-flex align-items-center gap-1" title="Open full high-resolution image in new tab">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        <span class="d-none d-md-inline">Full Image</span>
+                    </a>
+
+                    <button type="button" class="btn btn-sm btn-light rounded-circle shadow-sm ms-2" data-bs-dismiss="modal" title="Close (Esc)">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Image Canvas / Pan Container -->
+            <div class="modal-body p-0 position-relative" id="imageViewerContainer" title="Double click to toggle zoom, scroll to zoom in/out, drag to pan">
+                <img id="imageViewerTarget" src="" alt="Enlarged Document" />
+            </div>
+
+            <!-- Footer Quick Info & Shortcuts -->
+            <div class="modal-footer border-top border-secondary py-2 px-3 d-flex justify-content-between align-items-center text-white-50 small">
+                <div class="d-flex align-items-center gap-3">
+                    <span><i class="bi bi-mouse me-1 text-warning"></i><strong>Scroll:</strong> Zoom In / Out</span>
+                    <span><i class="bi bi-hand-index me-1 text-warning"></i><strong>Double Click:</strong> Toggle 200%</span>
+                    <span><i class="bi bi-arrows-move me-1 text-warning"></i><strong>Drag:</strong> Pan around</span>
+                </div>
+                <div>
+                    <span class="badge bg-secondary bg-opacity-50"><kbd class="bg-dark text-warning">+</kbd> / <kbd class="bg-dark text-warning">-</kbd> to Zoom</span>
+                    <span class="badge bg-secondary bg-opacity-50 ms-1"><kbd class="bg-dark text-warning">R</kbd> Reset</span>
+                    <span class="badge bg-secondary bg-opacity-50 ms-1"><kbd class="bg-dark text-warning">Esc</kbd> Close</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Live Directory Search Filter
+    document.getElementById('directorySearch').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#residentTable tbody tr');
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    });
+
+    // Beneficiary Resident Search Filter
+    document.getElementById('benSearchInput').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let items = document.querySelectorAll('#benResidentsList .ben-item');
+        items.forEach(item => {
+            let text = item.innerText.toLowerCase();
+            item.style.display = text.includes(filter) ? '' : 'none';
+        });
+    });
+
+    // Image Viewer Inspection System
+    let currentZoom = 1;
+    let currentRotation = 0;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let translateX = 0, translateY = 0;
+
+    function updateImageTransform() {
+        const img = document.getElementById('imageViewerTarget');
+        const badge = document.getElementById('imageViewerZoomLevel');
+        const container = document.getElementById('imageViewerContainer');
+        
+        if (img) {
+            img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom}) rotate(${currentRotation}deg)`;
+        }
+        if (badge) {
+            badge.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+        if (container) {
+            if (currentZoom > 1) {
+                container.style.cursor = isDragging ? 'grabbing' : 'grab';
+            } else {
+                container.style.cursor = 'default';
+            }
+        }
+    }
+
+    function zoomInImage() {
+        if (currentZoom < 6) {
+            currentZoom = Math.round((currentZoom + 0.25) * 100) / 100;
+            updateImageTransform();
+        }
+    }
+
+    function zoomOutImage() {
+        if (currentZoom > 0.5) {
+            currentZoom = Math.round((currentZoom - 0.25) * 100) / 100;
+            if (currentZoom <= 1) {
+                translateX = 0;
+                translateY = 0;
+            }
+            updateImageTransform();
+        }
+    }
+
+    function resetImageZoom() {
+        currentZoom = 1;
+        currentRotation = 0;
+        translateX = 0;
+        translateY = 0;
+        updateImageTransform();
+    }
+
+    function rotateImage() {
+        currentRotation = (currentRotation + 90) % 360;
+        updateImageTransform();
+    }
+
+    function openImageViewer(src, title) {
+        if (!src) return;
+        const img = document.getElementById('imageViewerTarget');
+        const titleEl = document.getElementById('imageViewerTitle');
+        const downloadBtn = document.getElementById('imageViewerDownloadBtn');
+        
+        if (img) img.src = src;
+        if (titleEl) titleEl.textContent = title || 'Image Inspection';
+        if (downloadBtn) downloadBtn.href = src;
+        
+        resetImageZoom();
+
+        const viewerModalEl = document.getElementById('imageViewerModal');
+        let viewerModal = bootstrap.Modal.getInstance(viewerModalEl);
+        if (!viewerModal) {
+            viewerModal = new bootstrap.Modal(viewerModalEl);
+        }
+        viewerModal.show();
+    }
+
+    // Initialize viewer interactions & stacked modal handling
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('imageViewerContainer');
+        const viewerModalEl = document.getElementById('imageViewerModal');
+
+        if (viewerModalEl) {
+            viewerModalEl.addEventListener('show.bs.modal', function () {
+                this.style.zIndex = '1085';
+                setTimeout(() => {
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    if (backdrops.length > 0) {
+                        backdrops[backdrops.length - 1].style.zIndex = '1080';
+                    }
+                }, 10);
+            });
+
+            viewerModalEl.addEventListener('hidden.bs.modal', function () {
+                resetImageZoom();
+                // Ensure parent inspection modal retains scrollability & focus
+                const openModals = document.querySelectorAll('.modal.show');
+                if (openModals.length > 0) {
+                    document.body.classList.add('modal-open');
+                }
+            });
+        }
+
+        if (container) {
+            // Mouse wheel zoom
+            container.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                if (e.deltaY < 0) {
+                    zoomInImage();
+                } else {
+                    zoomOutImage();
+                }
+            }, { passive: false });
+
+            // Double click to toggle 100% and 200%
+            container.addEventListener('dblclick', function(e) {
+                e.preventDefault();
+                if (currentZoom === 1) {
+                    currentZoom = 2;
+                } else {
+                    currentZoom = 1;
+                    translateX = 0;
+                    translateY = 0;
+                }
+                updateImageTransform();
+            });
+
+            // Click and drag to pan when zoomed
+            container.addEventListener('mousedown', function(e) {
+                if (currentZoom > 1) {
+                    isDragging = true;
+                    startX = e.clientX - translateX;
+                    startY = e.clientY - translateY;
+                    container.style.cursor = 'grabbing';
+                }
+            });
+
+            window.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    updateImageTransform();
+                }
+            });
+
+            window.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    if (container) container.style.cursor = currentZoom > 1 ? 'grab' : 'default';
+                }
+            });
+        }
+
+        // Keyboard shortcuts when viewer is active
+        window.addEventListener('keydown', function(e) {
+            const viewerModalEl = document.getElementById('imageViewerModal');
+            if (viewerModalEl && viewerModalEl.classList.contains('show')) {
+                if (e.key === '+' || e.key === '=') {
+                    e.preventDefault();
+                    zoomInImage();
+                } else if (e.key === '-' || e.key === '_') {
+                    e.preventDefault();
+                    zoomOutImage();
+                } else if (e.key === '0' || e.key.toLowerCase() === 'r') {
+                    e.preventDefault();
+                    resetImageZoom();
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
